@@ -1,0 +1,30 @@
+{
+  "name": "stethoscope-examples",
+  "version": "0.0.1",
+  "description": "Examples of Stethoscope app integration",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "precommit": "pretty-quick --staged"
+  },
+  "keywords": ["stethoscope"],
+  "author": "Jesse Kriss <jkriss@netflix.com>",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "body-parser": "^1.18.3",
+    "husky": "^0.14.3",
+    "nodemon": "^1.17.4",
+    "prettier": "^1.12.1",
+    "pretty-quick": "^1.4.1"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.3",
+    "express": "^4.16.3",
+    "express-jwt": "^5.3.1",
+    "http-errors": "^1.6.3",
+    "jsonwebtoken": "^8.2.1",
+    "winston": "^2.4.2",
+    "winston-daily-rotate-file": "^3.1.4"
+  }
+}

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Stethoscope app example</title>
+    <link rel="stylesheet" href="assets/semantic.min.css">
+    <style media="screen">
+      main {
+        padding-top: 7em;
+      }
+      .hidden {
+        display: none !important;
+      }
+      #user {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ui inverted top fixed menu">
+      <a href="/banner" class="item">Banner</a>
+      <a href="/reporting" class="item active">Reporting</a>
+      <a href="/blocking" class="item">Blocking</a>
+      <div class="right menu">
+        <a class="ui item" href="/logout">
+          Log out
+        </a>
+      </div>
+    </div>
+
+    <main class="ui container">
+      <h1 class="header">Reporting example</h1>
+      <p>
+        You can also log the report data to a server.
+        If you have an authenticated user, you can associate the device report with a username.
+      </p>
+      <div class="ui active inline loader"></div>
+      <div id="reported" class="ui segment hidden">
+        <p>Sent device report for <span id="user"></span> (<span id="result"></span>)</p>
+        <p>Now you can try going to the <a href="/blocking">blocking example</a>.</p>
+      </div>
+      <div id="report-failed" class="ui red segment hidden">Failed to send device report</div>
+    </main>
+
+    <script src="assets/jwt-decode.min.js" charset="utf-8"></script>
+    <script src="stethoscope.js" charset="utf-8"></script>
+    <script type="text/javascript">
+
+      // decode the jwt to get the username
+      var jwt = document.cookie.replace(
+        /(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/,
+        "$1"
+      );
+      var decoded = jwt_decode(jwt);
+      document.getElementById("user").innerText = decoded.sub;
+
+      var sendReport = function(result) {
+        // send the report to the server
+        fetch("/report", {
+          // send the cookie
+          credentials: "same-origin",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(result.data)
+        })
+          .then(function(res) {
+            console.log("reported:", res.status);
+            if (res.status === 200) {
+              document.getElementById("reported").classList.remove("hidden");
+            } else {
+              document.getElementById("report-failed").classList.remove("hidden");
+            }
+          })
+          .catch(function(err) {
+            console.log("reporting failed:", err);
+          });
+      };
+
+      // do the stethoscope check and post the results
+      checkStethoscope({
+        osVersion: {
+          darwin: {
+            ok: ">=10.13.4",
+            nudge: ">=10.12.6"
+          },
+          win32: {
+            ok: ">=10.0.16299",
+            nudge: ">=10.0.15063"
+          }
+        },
+        firewall: "ALWAYS",
+        diskEncryption: "ALWAYS",
+        automaticUpdates: "ALWAYS",
+        screenLock: "IF_SUPPORTED",
+        remoteLogin: "NEVER"
+      })
+        .then(function(result) {
+          console.log(result);
+          document.getElementById("result").innerText =
+            result.data.policy.validate.status;
+          sendReport(result);
+        })
+        .catch(function(err) {
+          // stethoscope app wasn't reachable
+          console.log("!!", err);
+        })
+        .finally(function() {
+          // either way, hide the spinner
+          document.querySelector(".loader").classList.add("hidden");
+        });
+
+    </script>
+  </body>
+</html>
