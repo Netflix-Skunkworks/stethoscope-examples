@@ -8,7 +8,9 @@
     "dev": "nodemon server.js",
     "precommit": "pretty-quick --staged"
   },
-  "keywords": ["stethoscope"],
+  "keywords": [
+    "stethoscope"
+  ],
   "author": "Jesse Kriss <jkriss@netflix.com>",
   "license": "Apache-2.0",
   "devDependencies": {
