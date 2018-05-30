@@ -11,6 +11,7 @@ This is a small [Express](https://expressjs.com/) server with examples of:
 Check out the [Stethoscope app](https://github.com/Netflix-Skunkworks/stethoscope-app) repo and run:
 
     npm install
+    npm run build:react
     NODE_ENV=development npm run electron
 
 In development mode, the Stethoscope app will accept CORS requests from localhost, which is necessary for this example server to work.
